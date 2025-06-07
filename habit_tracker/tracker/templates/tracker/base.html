@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+<head>
+    <title>Habit Tracker</title>
+    <link rel="stylesheet" href="{% static 'tracker/style.css' %}">
+</head>
+<body>
+    <div class="navbar">
+        <div class="burger-menu" onclick="toggleMenu()">☰</div>
+        <div class="menu-content" id="menu">
+            <a href="{% url 'dashboard' %}">Dashboard</a>
+            {% for habit in request.user.habit_set.all %}
+                <a href="{% url 'habit_detail' habit.id %}">{{ habit.name }}</a>
+            {% endfor %}
+            <a href="{% url 'logout' %}">Logout</a>
+        </div>
+    </div>
+    <div class="menu-overlay" id="menuOverlay" onclick="toggleMenu()"></div>
+
+    <div class="content">
+        {% block content %}{% endblock %}
+    </div>
+
+    <script>
+        function toggleMenu() {
+            var menu = document.getElementById("menu");
+            menu.style.display = (menu.style.display === "block") ? "none" : "block";
+        }
+        function toggleMenu() {
+            const menu = document.getElementById('menu');
+            const overlay = document.getElementById('menuOverlay');
+            const isOpen = menu.classList.contains('open');
+
+            if (isOpen) {
+                menu.classList.remove('open');
+                overlay.classList.remove('active');
+            } else {
+                menu.classList.add('open');
+                overlay.classList.add('active');
+            }
+        }
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.input-fields').forEach(wrapper => {
+        const input = wrapper.querySelector('input[type="number"]');
+        const increment = wrapper.querySelector('.increment');
+        const decrement = wrapper.querySelector('.decrement');
+
+        if (input && increment && decrement) {
+            increment.addEventListener('click', () => {
+            input.stepUp();
+            input.dispatchEvent(new Event('input'));  
+            });
+
+            decrement.addEventListener('click', () => {
+            input.stepDown();
+            input.dispatchEvent(new Event('input'));
+            });
+        }
+    })
+});
+    </script>
+</body>
+</html>
+

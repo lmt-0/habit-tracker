@@ -1,0 +1,16 @@
+{% extends 'tracker/base.html' %}
+{% load static %}
+{% block content %}
+<h1>Welcome, {{ user.username }}</h1>
+<a href="{% url 'add_habit' %}">+ Add New Habit</a>
+<ul class="habit-list">
+    {% for habit in habits %}
+        <li>
+            <a href="{% url 'habit_detail' habit.id %}">{{ habit.name }}</a>
+        </li>
+    {% empty %}
+        <li>Add a habit to get started.</li>
+    {% endfor %}
+</ul>
+{% endblock %}
+

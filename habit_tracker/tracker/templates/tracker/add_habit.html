@@ -1,0 +1,45 @@
+{% extends 'tracker/base.html' %}
+{% load static %}
+{% block content %}
+<h2>Add Habit</h2>
+<form method="post">
+    {% csrf_token %}
+    
+    <label for="name">Name:</label>
+    <input type="text" name="name" required><br><br>
+
+    <label for="description">Description (optional):</label>
+    <textarea name="description" rows="3"></textarea><br><br>
+
+    <label>
+        <input type="checkbox" name="is_numeric" id="is_numeric" onchange="toggleNumericFields()">
+        Track with numbers?
+    </label><br><br>
+
+    <div id="numeric_options" style="display:none;">
+        <label for="direction">Direction:</label>
+        <select name="direction">
+            <option value="less">Less is better</option>
+            <option value="more">More is better</option>
+        </select><br><br>
+
+        <div id="thresholds">
+            <label for="good_threshold">Good threshold:</label>
+            <input type="number" step="0.1" name="good_threshold"><br>
+
+            <label for="okay_threshold">Okay threshold (optional):</label>
+            <input type="number" step="0.1" name="okay_threshold"><br><br>
+        </div>
+    </div>
+
+    <button type="submit">Add Habit</button>
+</form>
+
+<script>
+function toggleNumericFields() {
+    const isChecked = document.getElementById("is_numeric").checked;
+    document.getElementById("numeric_options").style.display = isChecked ? 'block' : 'none';
+    }
+</script>
+{% endblock %}
+

@@ -1,0 +1,75 @@
+{% extends 'tracker/base.html' %}
+{% load static %}
+{% block content %}
+<h2>{{ habit.name }}</h2>
+<p>{{ habit.description }}</p>
+<p>Streak: {{ streak }}</p>
+<!-- month navigation -->
+<div style="display: flex; justify-content: space-between; align-items: center;">
+    <a href="?month={{ prev_month.month }}&year={{ prev_month.year }}">← {{ prev_month_name }}</a>
+    <h3>{{ month_name }} {{ year }}</h3>
+    <a href="?month={{ next_month.month }}&year={{ next_month.year }}">{{ next_month_name }} →</a>
+
+</div>
+
+<div class="calendar-wrapper">
+<div class="calendar">
+    <div class="day-name">Mon</div>
+    <div class="day-name">Tue</div>
+    <div class="day-name">Wed</div>
+    <div class="day-name">Thu</div>
+    <div class="day-name">Fri</div>
+    <div class="day-name">Sat</div>
+    <div class="day-name">Sun</div>
+
+    {% for week in weeks %}
+        {% for day in week %}
+            {% if day %}
+                <div class="day {{ day.colour }}">  
+                {% if day.date <= today %}
+                    <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="log_date" value="{{ day.date|date:'Y-m-d' }}">
+                    <div class="day-number">{{ day.day }}</div>
+                    {% if habit.is_numeric %}
+                        <div class="input-fields">
+                            <input type="number" step="0.1" name="value" value="{{ day.value|default:'' }}">
+                            <div class="button-row">
+                                <button type="button" class="decrement">–</button>
+                                <button type="button" class="increment">+</button>
+                            </div>
+                            <button type="submit" class="tick-button">✓</button>
+                        </div>
+                    {% else %}
+                        <button name="done" value="1" class="yes">✔</button>
+                        <button name="done" value="0" class="no">✖</button>
+                    {% endif %}
+
+                    </form>
+                {% else %}
+                    <div class="day-disabled">
+                    <div class="day-number">{{ day.day }}</div>
+                    {% if habit.is_numeric %}
+                        <input type="number" disabled>
+                    {% else %}
+                        <button disabled class="yes">✔</button>
+                        <button disabled class="no">✖</button>
+                    {% endif %}
+                    </div>
+                {% endif %}
+                </div>
+            {% else %}
+                <div class="day empty"></div>
+            {% endif %}
+        {% endfor %}
+    {% endfor %}
+    </div>
+    </div>
+<form action="{% url 'delete_habit' habit.id %}" method="post" style="display: inline;">
+    {% csrf_token %}
+    <button type="submit" class="delete-button" onclick="return confirm('Are you sure you want to delete this habit?');">
+        🗑 Delete Habit
+    </button>
+</form>
+
+{% endblock %}
