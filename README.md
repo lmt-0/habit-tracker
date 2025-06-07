@@ -2,8 +2,7 @@
 
 Simple Django app I use to track day-to-day habits.
 
-![image](https://github.com/user-attachments/assets/11c92dbb-eb17-4962-903f-b253c82f123e)
-
+![image](https://github.com/user-attachments/assets/0dcce848-8bf8-456d-851b-a9023b05fd07)
 
 Commands to run on computer:
 ```
