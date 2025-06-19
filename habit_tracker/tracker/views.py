@@ -131,58 +131,58 @@ def habit_detail(request, habit_id):
 
     return render(request, 'tracker/habit_detail.html', context)
 
-# must set 'good' threshold, 'okay' optional 
+# must set 'good' threshold, 'okay' optional
+# TODO, should probs clean this up 
+# (◉︵◉)
+
 def get_colour(habit, habit_log):
     if habit is None:
         return "grey"
-    
-    # why???
-    if habit.good_threshold is not None and habit.okay_threshold is not None:
-        if habit.is_numeric:
-            if not habit_log or habit_log.numeric_value is None or habit.direction not in ['less', 'more']:
-                return "grey"
-
-            value = habit_log.numeric_value
-            if habit.direction == 'less':
-                if value < habit.good_threshold:
-                    return "green"
-                elif value < habit.okay_threshold:
-                    return "orange"
-                else:
-                    return "red"
-            else:  # direction == 'more'
-                if value >= habit.good_threshold:
-                    return "green"
-                elif value >= habit.okay_threshold:
-                    return "orange"
-                else:
-                    return "red"
+    if habit is not None:
+        if habit_log.boolean_value == True:
+            return "green"
+        elif habit_log.boolean_value == False:
+            return "red"
         else:
-            if not habit_log:
-                return "grey"
-            return "green" if habit_log.boolean_value else "red"
-    elif habit.good_threshold is not None and habit.okay_threshold is None:
-        if habit.is_numeric:
-            if not habit_log or habit_log.numeric_value is None or habit.direction not in ['less', 'more']:
-                return "grey"
+            if habit.good_threshold is not None and habit.okay_threshold is not None:
+                if habit.is_numeric:
+                    if not habit_log or habit_log.numeric_value is None or habit.direction not in ['less', 'more']:
+                        return "grey"
 
-
-            value = habit_log.numeric_value
-            if habit.direction == 'less':
-                if value < habit.good_threshold:
-                    return "green"
+                    value = habit_log.numeric_value
+                    if habit.direction == 'less':
+                        if value < habit.good_threshold:
+                            return "green"
+                        elif value < habit.okay_threshold:
+                            return "orange"
+                        else:
+                            return "red"
+                    else:  # direction == 'more'
+                        if value >= habit.good_threshold:
+                            return "green"
+                        elif value >= habit.okay_threshold:
+                            return "orange"
+                        else:
+                            return "red"
                 else:
-                    return "red"
+                    if not habit_log:
+                        return "grey"
+                    return "green" if habit_log.boolean_value else "red"
+            elif habit.is_numeric:
+                if habit.good_threshold is not None and habit.okay_threshold is None:
+                    value = habit_log.numeric_value
+                    if habit.direction == 'less':
+                        if value < habit.good_threshold:
+                            return "green"
+                        else:
+                            return "red"
+                    else:
+                        if value >= habit.good_threshold:
+                            return "green"
+                        else: 
+                            return "red"
             else:
-                if value >= habit.good_threshold:
-                    return "green"
-                else: 
-                    return "red"
-        
-    else:
-        return "grey"
-
-
+                return "grey"
 
 @login_required
 def delete_habit(request, habit_id):
